@@ -1,0 +1,7 @@
+.doughnutChart {
+    width: 365px;
+    height: 365px;
+    background: url("./images/doughnut-background.svg");
+    background-repeat: no-repeat;
+    background-position: center center;
+}

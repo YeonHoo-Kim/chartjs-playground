@@ -1,0 +1,8 @@
+{
+  "name": "chartjs",
+  "version": "1.0.0",
+  "dependencies": {
+    "chart.js": "^4.2.0"
+  },
+  "type": "module"
+}

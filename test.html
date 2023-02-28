@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Chart.js example</title>
+    <link rel="stylesheet" href="style2021.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <section id="content">
+      <article class="container">
+        <div class="row align-items-center">
+          <div class="fl_title mt-4">
+            <h1>진단정보</h1>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col d-flex mx-1">
+            <div>진단건수</div>
+            <div>0건</div>
+          </div>
+          <div class="col d-flex mx-1">
+            <div>절연상태</div>
+            <div>우수 0건</div>
+            <div>양호 0건</div>
+            <div>점검필요 0건</div>
+          </div>
+          <div class="col d-flex mx-1">
+            <div>온도</div>
+            <div>우수 0건</div>
+            <div>양호 0건</div>
+            <div>점검필요 0건</div>
+          </div>
+          <div class="col d-flex mx-1">
+            <div>전압상태</div>
+            <div>우수 0건</div>
+            <div>양호 0건</div>
+            <div>점검필요 0건</div>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col">
+            <canvas id="sohStatsChart"></canvas>
+          </div>
+          <div class="col">
+            <canvas id="electricEfficiencyChart"></canvas>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col">
+            <canvas id="accurateEnergyBarChart"></canvas>
+          </div>
+          <div class="col">
+            <canvas id="cellVoltMaxChart"></canvas>
+          </div>
+          <div class="col">
+            <canvas id="cellVoltMinChart"></canvas>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col">
+            <canvas id="accurateEnergyLineChart"></canvas>
+          </div>
+          <div class="col">
+            <canvas id="batteryTemperatureMaxChart"></canvas>
+          </div>
+          <div class="col">
+            <canvas id="batteryTemperatureMinChart"></canvas>
+          </div>
+        </div>
+      </article>
+    </section>
+    <!-- <canvas id="sohChart"></canvas> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+    <script>
+      const batteryDiagResults = [
+        {
+          carNumber: "101하 8880",
+          vehicleId: "KNACB81GFNA114915",
+          diagCompleteTime: "2022-01-01",
+          diagStatus: "DIAG_SUCCESS",
+          diagErrorCode: "0",
+          phoneNumber: "01044980156",
+          carClassName: "뉴 니로 EV",
+          yearType: "2021",
+          odometer: 14133,
+          auxVolt: 14.6,
+          batteryCapacity: 64,
+          packSoc: 46,
+          packVolt: 357.4,
+          packCurrent: 2.9,
+          packTemperature: 25.25,
+          sohStats: 98.016005,
+          linearEquationConstantA: -0.0000359813,
+          linearEquationConstantB: 98.1406,
+          dtcCount: 0,
+          isoResistanceStatus: "GOOD",
+          batteryTemperatureStatus: "GOOD",
+          batteryBalancingStatus: "GOOD",
+          cellVoltMax: 4,
+          cellVoltMin: 4,
+          batteryTemperatureMax: 19,
+          batteryTemperatureMin: 18,
+          electricEfficiency: 4.9,
+          accurateChargeEnergy: 533.9,
+          accurateDischargeEnergy: 510,
+        },
+        {
+          carNumber: "101하 8880",
+          vehicleId: "KNACB81GFNA114915",
+          diagCompleteTime: "2022-04-01",
+          diagStatus: "DIAG_SUCCESS",
+          diagErrorCode: "0",
+          phoneNumber: "01044980156",
+          carClassName: "뉴 니로 EV",
+          yearType: "2021",
+          odometer: 24133,
+          auxVolt: 14.6,
+          batteryCapacity: 64,
+          packSoc: 46,
+          packVolt: 357.4,
+          packCurrent: 2.9,
+          packTemperature: 25.25,
+          sohStats: 97.9,
+          linearEquationConstantA: -0.0000359813,
+          linearEquationConstantB: 98.1406,
+          dtcCount: 2,
+          isoResistanceStatus: "NORMAL",
+          batteryTemperatureStatus: "GOOD",
+          batteryBalancingStatus: "GOOD",
+          cellVoltMax: 4,
+          cellVoltMin: 4,
+          batteryTemperatureMax: 19,
+          batteryTemperatureMin: 17,
+          electricEfficiency: 4.8,
+          accurateChargeEnergy: 540.9,
+          accurateDischargeEnergy: 530,
+        },
+        {
+          carNumber: "101하 8880",
+          vehicleId: "KNACB81GFNA114915",
+          diagCompleteTime: "2022-07-01",
+          diagStatus: "DIAG_SUCCESS",
+          diagErrorCode: "0",
+          phoneNumber: "01044980156",
+          carClassName: "뉴 니로 EV",
+          yearType: "2021",
+          odometer: 34133,
+          auxVolt: 14.6,
+          batteryCapacity: 64,
+          packSoc: 46,
+          packVolt: 357.4,
+          packCurrent: 2.9,
+          packTemperature: 25.25,
+          sohStats: 97.21,
+          linearEquationConstantA: -0.0000359813,
+          linearEquationConstantB: 98.1406,
+          dtcCount: 0,
+          isoResistanceStatus: "BAD",
+          batteryTemperatureStatus: "NORMAL",
+          batteryBalancingStatus: "GOOD",
+          cellVoltMax: 3.9,
+          cellVoltMin: 3.9,
+          batteryTemperatureMax: 18,
+          batteryTemperatureMin: 17.5,
+          electricEfficiency: 5,
+          accurateChargeEnergy: 570.8,
+          accurateDischargeEnergy: 560,
+        },
+        {
+          carNumber: "101하 8880",
+          vehicleId: "KNACB81GFNA114915",
+          diagCompleteTime: "2022-10-01",
+          diagStatus: "DIAG_SUCCESS",
+          diagErrorCode: "0",
+          phoneNumber: "01044980156",
+          carClassName: "뉴 니로 EV",
+          yearType: "2021",
+          odometer: 44133,
+          auxVolt: 14.6,
+          batteryCapacity: 64,
+          packSoc: 46,
+          packVolt: 357.4,
+          packCurrent: 2.9,
+          packTemperature: 25.25,
+          sohStats: 96.9,
+          linearEquationConstantA: -0.0000359813,
+          linearEquationConstantB: 98.1406,
+          dtcCount: 1,
+          isoResistanceStatus: "GOOD",
+          batteryTemperatureStatus: "GOOD",
+          batteryBalancingStatus: "BAD",
+          cellVoltMax: 3.95,
+          cellVoltMin: 3.95,
+          batteryTemperatureMax: 19,
+          batteryTemperatureMin: 19,
+          electricEfficiency: 5.1,
+          accurateChargeEnergy: 580,
+          accurateDischargeEnergy: 570,
+        },
+        {
+          carNumber: "101하 8880",
+          vehicleId: "KNACB81GFNA114915",
+          diagCompleteTime: "2022-01-01",
+          diagStatus: "DIAG_SUCCESS",
+          diagErrorCode: "0",
+          phoneNumber: "01044980156",
+          carClassName: "뉴 니로 EV",
+          yearType: "2021",
+          odometer: 14133,
+          auxVolt: 14.6,
+          batteryCapacity: 64,
+          packSoc: 46,
+          packVolt: 357.4,
+          packCurrent: 2.9,
+          packTemperature: 25.25,
+          sohStats: 98.016005,
+          linearEquationConstantA: -0.0000359813,
+          linearEquationConstantB: 98.1406,
+          dtcCount: 0,
+          isoResistanceStatus: "GOOD",
+          batteryTemperatureStatus: "GOOD",
+          batteryBalancingStatus: "GOOD",
+          cellVoltMax: 4,
+          cellVoltMin: 4,
+          batteryTemperatureMax: 19,
+          batteryTemperatureMin: 18,
+          electricEfficiency: 4.9,
+          accurateChargeEnergy: 533.9,
+          accurateDischargeEnergy: 510,
+        },
+        {
+          carNumber: "101하 8880",
+          vehicleId: "KNACB81GFNA114915",
+          diagCompleteTime: "2022-04-01",
+          diagStatus: "DIAG_SUCCESS",
+          diagErrorCode: "0",
+          phoneNumber: "01044980156",
+          carClassName: "뉴 니로 EV",
+          yearType: "2021",
+          odometer: 24133,
+          auxVolt: 14.6,
+          batteryCapacity: 64,
+          packSoc: 46,
+          packVolt: 357.4,
+          packCurrent: 2.9,
+          packTemperature: 25.25,
+          sohStats: 97.9,
+          linearEquationConstantA: -0.0000359813,
+          linearEquationConstantB: 98.1406,
+          dtcCount: 2,
+          isoResistanceStatus: "NORMAL",
+          batteryTemperatureStatus: "GOOD",
+          batteryBalancingStatus: "GOOD",
+          cellVoltMax: 4,
+          cellVoltMin: 4,
+          batteryTemperatureMax: 19,
+          batteryTemperatureMin: 17,
+          electricEfficiency: 4.8,
+          accurateChargeEnergy: 540.9,
+          accurateDischargeEnergy: 530,
+        },
+        {
+          carNumber: "101하 8880",
+          vehicleId: "KNACB81GFNA114915",
+          diagCompleteTime: "2022-07-01",
+          diagStatus: "DIAG_SUCCESS",
+          diagErrorCode: "0",
+          phoneNumber: "01044980156",
+          carClassName: "뉴 니로 EV",
+          yearType: "2021",
+          odometer: 34133,
+          auxVolt: 14.6,
+          batteryCapacity: 64,
+          packSoc: 46,
+          packVolt: 357.4,
+          packCurrent: 2.9,
+          packTemperature: 25.25,
+          sohStats: 97.21,
+          linearEquationConstantA: -0.0000359813,
+          linearEquationConstantB: 98.1406,
+          dtcCount: 0,
+          isoResistanceStatus: "BAD",
+          batteryTemperatureStatus: "NORMAL",
+          batteryBalancingStatus: "GOOD",
+          cellVoltMax: 3.9,
+          cellVoltMin: 3.9,
+          batteryTemperatureMax: 18,
+          batteryTemperatureMin: 17.5,
+          electricEfficiency: 5,
+          accurateChargeEnergy: 570.8,
+          accurateDischargeEnergy: 560,
+        },
+        {
+          carNumber: "101하 8880",
+          vehicleId: "KNACB81GFNA114915",
+          diagCompleteTime: "2022-10-01",
+          diagStatus: "DIAG_SUCCESS",
+          diagErrorCode: "0",
+          phoneNumber: "01044980156",
+          carClassName: "뉴 니로 EV",
+          yearType: "2021",
+          odometer: 44133,
+          auxVolt: 14.6,
+          batteryCapacity: 64,
+          packSoc: 46,
+          packVolt: 357.4,
+          packCurrent: 2.9,
+          packTemperature: 25.25,
+          sohStats: 96.9,
+          linearEquationConstantA: -0.0000359813,
+          linearEquationConstantB: 98.1406,
+          dtcCount: 1,
+          isoResistanceStatus: "GOOD",
+          batteryTemperatureStatus: "GOOD",
+          batteryBalancingStatus: "BAD",
+          cellVoltMax: 3.95,
+          cellVoltMin: 3.95,
+          batteryTemperatureMax: 19,
+          batteryTemperatureMin: 19,
+          electricEfficiency: 5.1,
+          accurateChargeEnergy: 580,
+          accurateDischargeEnergy: 570,
+        },
+      ];
+
+      // 검출건수
+      const totalDtcCount = batteryDiagResults.reduce(
+        (acc, cur) => acc + cur.dtcCount,
+        0
+      );
+
+      // 절연상태, 온도, 전압상태
+      const statusTypes = ["GOOD", "NORMAL", "BAD"];
+      const totalIsoResistanceStatus = {
+        GOOD: 0,
+        NORMAL: 0,
+        BAD: 0,
+      };
+      const totalBatteryTemperatureStatus = {
+        GOOD: 0,
+        NORMAL: 0,
+        BAD: 0,
+      };
+      const totalBatteryBalancingStatus = {
+        GOOD: 0,
+        NORMAL: 0,
+        BAD: 0,
+      };
+      batteryDiagResults.forEach((cur) => {
+        if (statusTypes.includes(cur.isoResistanceStatus)) {
+          totalIsoResistanceStatus[cur.isoResistanceStatus]++;
+        } else {
+          totalIsoResistanceStatus["BAD"]++;
+        }
+
+        if (statusTypes.includes(cur.batteryTemperatureStatus)) {
+          totalBatteryTemperatureStatus[cur.batteryTemperatureStatus]++;
+        } else {
+          totalBatteryTemperatureStatus["BAD"]++;
+        }
+
+        if (statusTypes.includes(cur.batteryBalancingStatus)) {
+          totalBatteryBalancingStatus[cur.batteryBalancingStatus]++;
+        } else {
+          totalBatteryBalancingStatus["BAD"]++;
+        }
+      });
+
+      // chart config
+      const COLOR_WHITE = "#ffffff";
+      const BORDER_COLOR = ["#5c7ea8", "#f0962c"];
+      const GRADIENT_COLOR = [
+        "rgba(211, 230, 249, 0.4)",
+        "rgba(174, 194, 244, 0.4)",
+      ];
+      const GRID_COLOR = "#e3e3e3";
+
+      // chart tick font
+      const xTickFont = {
+        family: "Noto Sans KR",
+        size: 10,
+        weight: 500,
+        lineHeight: 1.2,
+      };
+
+      const yTickFont = {
+        family: "Roboto",
+        size: 10,
+        weight: 500,
+        lineHeight: 1.2,
+      };
+
+      // Line chart config
+      const pointConfig = {
+        pointStyle: "circle",
+        pointRadius: 5,
+        pointBorderColor: BORDER_COLOR[0],
+        pointBorderWidth: 4,
+        pointBackgroundColor: COLOR_WHITE,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: COLOR_WHITE,
+        pointHoverBorderWidth: 3,
+      };
+
+      // Line chart datalabels
+      const datalabelConfig = {
+        datalabels: {
+          align: "end",
+          anchor: "end",
+          color: BORDER_COLOR[0],
+          font: {
+            family: "Roboto",
+            size: 8,
+            weight: 700,
+            lineHeight: 1.2,
+          },
+          formatter: function (value, context) {
+            return Math.round(parseFloat(value) * 10) / 10;
+          },
+        },
+      };
+
+      // Line chart dataset config
+      const datasetConfig = {
+        borderColor: BORDER_COLOR[0],
+        borderWidth: 2,
+        tension: 0.1,
+        fill: true,
+      };
+
+      function gradientFill(canvasElement) {
+        const gradient = canvasElement
+          .getContext("2d")
+          .createLinearGradient(500, 0, 100, 0);
+        gradient.addColorStop(0, GRADIENT_COLOR[0]);
+        gradient.addColorStop(1, GRADIENT_COLOR[1]);
+        return gradient;
+      }
+
+      // label (diag complete time)
+      const today = new Date();
+      const curYear = today.getFullYear().toString();
+      const diagCompleteLabel = batteryDiagResults.map(
+        (cur) => cur.diagCompleteTime
+      );
+
+      // SOH
+      const sohCanvas = document.getElementById("sohStatsChart");
+
+      const sohDataset = batteryDiagResults.map((cur) => cur.sohStats);
+
+      new Chart(sohCanvas, {
+        type: "line",
+        data: {
+          labels: diagCompleteLabel,
+          datasets: [
+            {
+              label: "SoH",
+              data: sohDataset,
+              backgroundColor: gradientFill(sohCanvas),
+              ...datalabelConfig,
+              ...datasetConfig,
+              ...pointConfig,
+            },
+          ],
+        },
+        plugins: [ChartDataLabels],
+        options: {
+          maintainAspectRatio: true,
+          plugins: {
+            title: {
+              // 제목
+              display: true,
+              text: "SOH",
+              color: "#911",
+              font: {
+                family: "Noto Sans KR",
+                size: 20,
+                weight: "bold",
+                lineHeight: 1.2,
+              },
+              padding: { top: 20, left: 0, right: 0, bottom: 0 },
+            },
+            legend: {
+              // 범례 미표시
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+          scales: {
+            x: {
+              border: {
+                color: GRID_COLOR,
+                width: 1,
+              },
+              grid: {
+                display: false,
+              },
+              ticks: {
+                font: xTickFont,
+              },
+              offset: true, // 차트 좌우에 한 간격 추가
+            },
+            y: {
+              border: {
+                // y축 숨기기
+                display: false,
+              },
+              grid: {
+                color: GRID_COLOR,
+              },
+              ticks: {
+                font: yTickFont,
+                padding: 20,
+                stepSize: 5,
+              },
+              suggestedMax: 100,
+              suggestedMin: 80,
+            },
+          },
+        },
+      });
+
+      // 누적 전비 (km/kWh)
+      const electricEfficiencyCanvas = document.getElementById(
+        "electricEfficiencyChart"
+      );
+      const electricEfficiencyDataset = batteryDiagResults.map(
+        (cur) => cur.electricEfficiency
+      );
+
+      new Chart(electricEfficiencyCanvas, {
+        type: "line",
+        data: {
+          labels: diagCompleteLabel,
+          datasets: [
+            {
+              label: "누적 전비",
+              data: electricEfficiencyDataset,
+              backgroundColor: gradientFill(electricEfficiencyCanvas),
+              ...datalabelConfig,
+              ...datasetConfig,
+              ...pointConfig,
+            },
+          ],
+        },
+        plugins: [ChartDataLabels],
+        options: {
+          maintainAspectRatio: true,
+          plugins: {
+            title: {
+              // 제목
+              display: true,
+              text: "누적 전비(km/kWh)",
+              color: "#911",
+              font: {
+                family: "Noto Sans KR",
+                size: 20,
+                weight: "bold",
+                lineHeight: 1.2,
+              },
+              padding: { top: 20, left: 0, right: 0, bottom: 0 },
+            },
+            legend: {
+              // 범례 미표시
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              border: {
+                // y축 숨기기
+                display: false,
+              },
+              grid: {
+                color: GRID_COLOR,
+              },
+              ticks: {
+                padding: 20,
+                stepSize: 0.5,
+              },
+              suggestedMax: 7,
+              suggestedMin: 3.5,
+            },
+          },
+        },
+      });
+
+      // 누적 충전/방전량 dataset
+      const accurateChargeEnergyDataset = batteryDiagResults.map(
+        (cur) => cur.accurateChargeEnergy
+      );
+      const accurateDischargeEnergyDataset = batteryDiagResults.map(
+        (cur) => cur.accurateDischargeEnergy
+      );
+
+      // 누적 충전/방전량 line chart (kWh)
+      const accurateEnergyLineCanvas = document.getElementById(
+        "accurateEnergyLineChart"
+      );
+
+      new Chart(accurateEnergyLineCanvas, {
+        type: "line",
+        data: {
+          labels: diagCompleteLabel,
+          datasets: [
+            {
+              label: "누적 충전량",
+              data: accurateChargeEnergyDataset,
+              borderColor: BORDER_COLOR[0],
+              tension: 0.1,
+            },
+            {
+              label: "누적 방전량",
+              data: accurateDischargeEnergyDataset,
+              borderColor: BORDER_COLOR[1],
+              tension: 0.1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: true,
+          plugins: {
+            title: {
+              // 제목
+              display: true,
+              text: "누적 충전/방전량(kWh)",
+              color: "#911",
+              font: {
+                family: "Noto Sans KR",
+                size: 20,
+                weight: "bold",
+                lineHeight: 1.2,
+              },
+              padding: { top: 20, left: 0, right: 0, bottom: 0 },
+            },
+            legend: {
+              // 범례 미표시
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              border: {
+                // y축 숨기기
+                display: false,
+              },
+              grid: {
+                color: GRID_COLOR,
+              },
+              ticks: {
+                padding: 20,
+                stepSize: 100,
+                maxTicksLimit: 6,
+              },
+            },
+          },
+        },
+      });
+
+      // 누적 충전/방전량 Bar chart (kWh)
+      const accurateEnergyBarCanvas = document.getElementById(
+        "accurateEnergyBarChart"
+      );
+      new Chart(accurateEnergyBarCanvas, {
+        type: "bar",
+        data: {
+          labels: diagCompleteLabel,
+          datasets: [
+            {
+              label: "누적 충전량",
+              data: accurateChargeEnergyDataset,
+              borderColor: BORDER_COLOR[0],
+              borderRadius: 100,
+              backgroundColor: BORDER_COLOR[0],
+              barPercentage: 0.7,
+            },
+            {
+              label: "누적 방전량",
+              data: accurateDischargeEnergyDataset,
+              borderColor: BORDER_COLOR[1],
+              borderRadius: 100,
+              backgroundColor: BORDER_COLOR[1],
+              barPercentage: 0.7,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: true,
+          plugins: {
+            title: {
+              // 제목
+              display: true,
+              text: "누적 충전/방전량(kWh)",
+              color: "#911",
+              font: {
+                family: "Noto Sans KR",
+                size: 20,
+                weight: "bold",
+                lineHeight: 1.2,
+              },
+              padding: { top: 20, left: 0, right: 0, bottom: 0 },
+            },
+            legend: {
+              // 범례 미표시
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+              offset: true, // 차트 좌우에 한 간격 추가
+            },
+            y: {
+              border: {
+                // y축 숨기기
+                display: false,
+              },
+              grid: {
+                color: GRID_COLOR,
+              },
+              ticks: {
+                padding: 20,
+              },
+            },
+          },
+        },
+      });
+
+      // 셀 전압 Max (V)
+      const cellVoltMaxCanvas = document.getElementById("cellVoltMaxChart");
+      const cellVoltMaxDataset = batteryDiagResults.map(
+        (cur) => cur.cellVoltMax
+      );
+
+      new Chart(cellVoltMaxCanvas, {
+        type: "line",
+        data: {
+          labels: diagCompleteLabel,
+          datasets: [
+            {
+              label: "셀 전압 Max",
+              data: cellVoltMaxDataset,
+              borderColor: BORDER_COLOR[0],
+              tension: 0.1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: true,
+          plugins: {
+            title: {
+              // 제목
+              display: true,
+              text: "셀 전압 Max(V)",
+              color: "#911",
+              font: {
+                family: "Noto Sans KR",
+                size: 20,
+                weight: "bold",
+                lineHeight: 1.2,
+              },
+              padding: { top: 20, left: 0, right: 0, bottom: 0 },
+            },
+            legend: {
+              // 범례 미표시
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              border: {
+                // y축 숨기기
+                display: false,
+              },
+              grid: {
+                color: GRID_COLOR,
+              },
+              ticks: {
+                padding: 20,
+              },
+            },
+          },
+        },
+      });
+
+      // 셀 전압 Min (V)
+      const cellVoltMinCanvas = document.getElementById("cellVoltMinChart");
+      const cellVoltMinDataset = batteryDiagResults.map(
+        (cur) => cur.cellVoltMin
+      );
+
+      new Chart(cellVoltMinCanvas, {
+        type: "line",
+        data: {
+          labels: diagCompleteLabel,
+          datasets: [
+            {
+              label: "셀 전압 Min",
+              data: cellVoltMinDataset,
+              borderColor: BORDER_COLOR[0],
+              tension: 0.1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: true,
+          plugins: {
+            title: {
+              // 제목
+              display: true,
+              text: "셀 전압 Min(V)",
+              color: "#911",
+              font: {
+                family: "Noto Sans KR",
+                size: 20,
+                weight: "bold",
+                lineHeight: 1.2,
+              },
+              padding: { top: 20, left: 0, right: 0, bottom: 0 },
+            },
+            legend: {
+              // 범례 미표시
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+          scales: {
+            x: {
+              border: {
+                color: GRID_COLOR,
+                width: 1,
+              },
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              border: {
+                // y축 숨기기
+                display: false,
+              },
+              grid: {
+                color: GRID_COLOR,
+              },
+              ticks: {
+                padding: 20,
+              },
+            },
+          },
+        },
+      });
+
+      // 모듈온도 Max(˚C)
+      const batteryTemperatureMaxCanvas = document.getElementById(
+        "batteryTemperatureMaxChart"
+      );
+      const batteryTemperatureMaxDataset = batteryDiagResults.map(
+        (cur) => cur.batteryTemperatureMax
+      );
+
+      new Chart(batteryTemperatureMaxCanvas, {
+        type: "line",
+        data: {
+          labels: diagCompleteLabel,
+          datasets: [
+            {
+              label: "모듈온도 Max",
+              data: batteryTemperatureMaxDataset,
+              borderColor: BORDER_COLOR[0],
+              tension: 0.1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: true,
+          plugins: {
+            title: {
+              // 제목
+              display: true,
+              text: "모듈온도 Max(˚C)",
+              color: "#911",
+              font: {
+                family: "Noto Sans KR",
+                size: 20,
+                weight: "bold",
+                lineHeight: 1.2,
+              },
+              padding: { top: 20, left: 0, right: 0, bottom: 0 },
+            },
+            legend: {
+              // 범례 미표시
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              border: {
+                // y축 숨기기
+                display: false,
+              },
+              grid: {
+                color: GRID_COLOR,
+              },
+              ticks: {
+                padding: 20,
+              },
+            },
+          },
+        },
+      });
+
+      // 모듈온도 Min(˚C)
+      const batteryTemperatureMinCanvas = document.getElementById(
+        "batteryTemperatureMinChart"
+      );
+      const batteryTemperatureMinDataset = batteryDiagResults.map(
+        (cur) => cur.batteryTemperatureMin
+      );
+
+      new Chart(batteryTemperatureMinCanvas, {
+        type: "line",
+        data: {
+          labels: diagCompleteLabel,
+          datasets: [
+            {
+              label: "모듈온도 Min",
+              data: batteryTemperatureMinDataset,
+              borderColor: BORDER_COLOR[0],
+              tension: 0.1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: true,
+          plugins: {
+            title: {
+              // 제목
+              display: true,
+              text: "모듈온도 Min(˚C)",
+              color: "#911",
+              font: {
+                family: "Noto Sans KR",
+                size: 20,
+                weight: "bold",
+                lineHeight: 1.2,
+              },
+              padding: { top: 20, left: 0, right: 0, bottom: 0 },
+            },
+            legend: {
+              // 범례 미표시
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              border: {
+                // y축 숨기기
+                display: false,
+              },
+              grid: {
+                color: GRID_COLOR,
+              },
+              ticks: {
+                padding: 20,
+              },
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
