@@ -5,107 +5,108 @@
     <link rel="stylesheet" href="style2023.css" />
   </head>
   <body>
-    <div class="doughnutChart">
-      <canvas id="doughnutChart"></canvas>
+    <div class="batteryLifeChart">
+      <canvas id="batteryLifeChart" class="canvas"></canvas>
+      <div class="batteryLifeChartLabel">
+        <div class="rank">상위 50%</div>
+        <div class="score">
+          <div class="number">68</div>
+          <div class="text">점</div>
+        </div>
+        <div class="status">주의</div>
+      </div>
     </div>
-    <div class="test"></div>
+    <div class="batteryChargeChart">
+      <div class="leftSelector">
+
+      </div>
+      <div class="rightSelector" >
+
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-      const doughnutCanvas = document.getElementById("doughnutChart");
+      const batteryLifeCanvas = document.getElementById("batteryLifeChart");
 
       const CHART_SIZE = 335;
       const CUTOUT_RATIO = 0.78;
-      const DATA = 0.78;
-      const DATA_DIFF = 0.02;
-      const RAD_DIFF = 0.05;
+      const DATA = 0.68;
+      const STATUS = "NORMAL";
+      const IMAGE_RADIUS = 23;
 
       const GRADIENT_A = ["#418bf9", "#3378df"];
       const GRADIENT_B = ["#00c3b9", "#00aba2"];
       const GRADIENT_C = ["#ff464b", "#da291c"];
 
-      function gradientFill(canvasElement) {
-        const gradient = canvasElement
-          .getContext("2d")
-          .createLinearGradient(0, 0, 0, 335);
-        gradient.addColorStop(0, GRADIENT_A[0]);
-        gradient.addColorStop(1, GRADIENT_A[1]);
-        return gradient;
+      const BATTERY_LIFE_A = "./images/batteryLifeA.svg";
+      const BATTERY_LIFE_B = "./images/batteryLifeB.svg";
+      const BATTERY_LIFE_C = "./images/batteryLifeC.svg";
+
+      const batteryLifeGradient = batteryLifeCanvas
+        .getContext("2d")
+        .createLinearGradient(0, 0, 0, 335);
+      
+      const batteryImg = new Image();
+
+      if (STATUS === "GOOD") {
+        batteryImg.src = BATTERY_LIFE_A;
+        batteryLifeGradient.addColorStop(0, GRADIENT_A[0]);
+        batteryLifeGradient.addColorStop(1, GRADIENT_A[1]);
+      } else if (STATUS === "NORMAL") {
+        batteryImg.src = BATTERY_LIFE_B;
+        batteryLifeGradient.addColorStop(0, GRADIENT_B[0]);
+        batteryLifeGradient.addColorStop(1, GRADIENT_B[1]);
+      } else {
+        batteryImg.src = BATTERY_LIFE_C;
+        batteryLifeGradient.addColorStop(0, GRADIENT_C[0]);
+        batteryLifeGradient.addColorStop(1, GRADIENT_C[1]);
       }
 
-      const centerLabel = {
-        id: "centerLabel",
-        beforeDraw: (chart, args, options) => {
-          const { ctx, data } = chart;
-          ctx.save();
-          ctx.font = "50px sans-serif";
-          ctx.fillStyle = "#000000";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText(
-            `${DATA * 100}점`,
-            chart.getDatasetMeta(0).data[0].x,
-            chart.getDatasetMeta(0).data[0].y
-          );
-          ctx.restore();
-        },
-      };
-
-      const endPoint = {
-        id: "endPoint",
-        afterDraw: (chart, args, options) => {
-          const { ctx } = chart;
-          // const radius = (CHART_SIZE * (1 - CUTOUT_RATIO - RAD_DIFF)) / 2 / 2; // (outerRadius - innerRadius) / 2 / 2
-          const radius = 23;
-          const arg = (DATA) * 2 * Math.PI - Math.PI; // circumference(rad) - PI
-          const endPointRad = chart.getDatasetMeta(0).data[0].outerRadius/2 + chart.getDatasetMeta(0).data[0].innerRadius/2; // length from center to endPoint
-          console.log(chart.getDatasetMeta(0).data[0]);
-          const px = chart.getDatasetMeta(0).data[0].x - endPointRad * Math.sin(arg);
-          const py = chart.getDatasetMeta(0).data[0].y + endPointRad * Math.cos(arg);
-
-          ctx.save();
-          ctx.beginPath();
-          ctx.fillStyle = "#418bf9";
-          ctx.arc(px, py, radius, 0, 2 * Math.PI);
-          ctx.fill();
-          ctx.restore();
-        },
-      };
-
-      const myChart = new Chart(doughnutCanvas, {
+      new Chart(batteryLifeCanvas, {
         type: "doughnut",
         data: {
           labels: ["배터리 수명점수"],
           datasets: [
             {
               data: [DATA, 1 - DATA],
-              backgroundColor: [gradientFill(doughnutCanvas), "#ffffff00"],
+              backgroundColor: [batteryLifeGradient, "#ffffff00"],
               borderWidth: 0,
               borderRadius: 30,
             },
           ],
         },
-        plugins: [centerLabel, endPoint],
         options: {
           animation: {
             animateScale: false,
             animateRotate: true,
             onProgress: function (context) {
-              // if (context.initial) {
-              //   initProgress.value = context.currentStep / context.numSteps;
-              // } else {
-              //   progress.value = context.currentStep / context.numSteps;
-              // }
-              // console.log(context);
-            },
-            onComplete: function (context) {
-              // console.log(context);
+              const curChart = context.chart;
+              const curCtx = context.chart.ctx;
+              const endPointRad =
+                curChart.getDatasetMeta(0).data[0].outerRadius / 2 +
+                curChart.getDatasetMeta(0).data[0].innerRadius / 2; // length from center to endPoint
+              const px =
+                curChart.getDatasetMeta(0).data[0].x -
+                endPointRad *
+                  Math.sin(
+                    curChart.getDatasetMeta(0).data[0].circumference - Math.PI
+                  ) -
+                IMAGE_RADIUS;
+              const py =
+                curChart.getDatasetMeta(0).data[0].y +
+                endPointRad *
+                  Math.cos(
+                    curChart.getDatasetMeta(0).data[0].circumference - Math.PI
+                  ) -
+                IMAGE_RADIUS;
+              curCtx.drawImage(batteryImg, px, py);
             },
           },
           cutout: `${CUTOUT_RATIO * 100}%`,
           layout: {
-            padding: 15
+            padding: 15,
           },
           plugins: {
             legend: {
@@ -118,6 +119,9 @@
           spacing: 0,
         },
       });
+    </script>
+    <script>
+      
     </script>
   </body>
 </html>

@@ -1,7 +1,136 @@
-.doughnutChart {
+.batteryLifeChart {
+    position: relative;
     width: 365px;
     height: 365px;
-    background: url("./images/doughnut-background.svg");
+    background: url("./images/batteryLife-background.svg");
     background-repeat: no-repeat;
     background-position: center center;
 }
+
+.batteryLifeChart .canvas {
+    position: absolute;
+    width: 365px;
+    height: 365px;
+}
+
+.batteryLifeChartLabel {
+    position: absolute;
+    width: 71px;
+    height: 104px;
+    top: 127px; /* 365/2 - 104/2 */
+    left: 147px; /* 365/2 - 71/2*/
+}
+
+.batteryLifeChartLabel .rank {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #888888;
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    align-self: stretch;
+}
+
+.batteryLifeChartLabel .score {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    align-self: stretch;
+}
+
+.batteryLifeChartLabel .score .number {
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 60px;
+    text-align: center;
+    color: #000000;
+}
+
+.batteryLifeChartLabel .score .text {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 30px;
+    text-align: center;
+    color: #000000;
+}
+
+.batteryLifeChartLabel .status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    width: 71px;
+    height: 22px;
+
+    background: #5591EB;
+    border-radius: 4px;
+
+    flex: none;
+    order: 2;
+    align-self: stretch;
+    flex-grow: 0;
+
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 18px;
+    color: #ffffff;
+}
+
+.batteryChargeChart {
+    width: attr(data-width);
+    height: 86px; /* 60 + 26 */
+    position: relative;
+
+    background-color: red;
+}
+
+.batteryChargeChart .leftSelector {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.batteryChargeChart .rightSelector {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.batteryChargeChart .barGroup {
+    position: absolute;
+    left: 0;
+    top: 12px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.batteryChargeChart .leftSelector .title {
+
+}
+
+.batteryChargeChart .leftSelector .icon {
+
+}
+
